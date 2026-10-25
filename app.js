@@ -8,16 +8,16 @@ const API_KEY = '632a6a457e340ff67fb4a9c5a065141a';
 
 const STREAMING_CONFIG = {
   // Default affiliate link (সব ম্যাচের জন্য ডিফল্ট)
-  default: 'https://example.com/stream?aff=YOUR_AFFILIATE_ID',
+  default: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
   
   // Sport-wise specific links (চাইলে স্পোর্ট অনুযায়ী আলাদা লিংক দিন)
   sports: {
-    football: 'https://example.com/football-stream?aff=YOUR_AFFILIATE_ID',
-    basketball: 'https://example.com/basketball-stream?aff=YOUR_AFFILIATE_ID',
-    baseball: 'https://example.com/baseball-stream?aff=YOUR_AFFILIATE_ID',
-    hockey: 'https://example.com/hockey-stream?aff=YOUR_AFFILIATE_ID',
-    'american-football': 'https://example.com/nfl-stream?aff=YOUR_AFFILIATE_ID',
-    volleyball: 'https://example.com/volleyball-stream?aff=YOUR_AFFILIATE_ID'
+    football: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
+    basketball: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
+    baseball: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
+    hockey: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
+    'american-football': 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102',
+    volleyball: 'https://ryzvxm.com/af?o=8bf4daadfb3373e89d4b0620dc7b6f6a:63b169ad735aa7b17caa5b34c8fe9102'
   },
   
   // League-wise specific links (optional - league ID দিয়ে)
