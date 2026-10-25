@@ -1,5 +1,32 @@
 const API_KEY = '632a6a457e340ff67fb4a9c5a065141a';
 
+// ============================================
+// STREAMING AFFILIATE LINKS CONFIG
+// ============================================
+// এখানে আপনার streaming affiliate links বসান
+// প্রতিটি ইভেন্টের জন্য "Watch Stream" বাটন এই লিংকগুলো ব্যবহার করবে
+
+const STREAMING_CONFIG = {
+  // Default affiliate link (সব ম্যাচের জন্য ডিফল্ট)
+  default: 'https://example.com/stream?aff=YOUR_AFFILIATE_ID',
+  
+  // Sport-wise specific links (চাইলে স্পোর্ট অনুযায়ী আলাদা লিংক দিন)
+  sports: {
+    football: 'https://example.com/football-stream?aff=YOUR_AFFILIATE_ID',
+    basketball: 'https://example.com/basketball-stream?aff=YOUR_AFFILIATE_ID',
+    baseball: 'https://example.com/baseball-stream?aff=YOUR_AFFILIATE_ID',
+    hockey: 'https://example.com/hockey-stream?aff=YOUR_AFFILIATE_ID',
+    'american-football': 'https://example.com/nfl-stream?aff=YOUR_AFFILIATE_ID',
+    volleyball: 'https://example.com/volleyball-stream?aff=YOUR_AFFILIATE_ID'
+  },
+  
+  // League-wise specific links (optional - league ID দিয়ে)
+  // leagues: {
+  //   39: 'https://example.com/premier-league?aff=YOUR_ID',  // Premier League
+  //   140: 'https://example.com/la-liga?aff=YOUR_ID'         // La Liga
+  // }
+};
+
 const SPORTS = {
   football: { base: 'https://v3.football.api-sports.io', endpoint: 'fixtures', name: 'Football' },
   basketball: { base: 'https://v1.basketball.api-sports.io', endpoint: 'games', name: 'Basketball' },
@@ -11,6 +38,7 @@ const SPORTS = {
 
 let currentTimezone = 'Asia/Dhaka';
 let refreshInterval = null;
+let currentSport = 'football';
 
 // DOM elements
 const timezoneSelect = document.getElementById('timezone-select');
@@ -45,9 +73,21 @@ sportCards.forEach(card => {
     sportCards.forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     const sport = card.dataset.sport;
+    currentSport = sport;
     loadSportMatches(sport);
   });
 });
+
+function getStreamLink(leagueId, sport = 'football') {
+  // Priority: league-specific > sport-specific > default
+  if (STREAMING_CONFIG.leagues && STREAMING_CONFIG.leagues[leagueId]) {
+    return STREAMING_CONFIG.leagues[leagueId];
+  }
+  if (STREAMING_CONFIG.sports && STREAMING_CONFIG.sports[sport]) {
+    return STREAMING_CONFIG.sports[sport];
+  }
+  return STREAMING_CONFIG.default;
+}
 
 async function apiFetch(url) {
   try {
@@ -92,14 +132,13 @@ function formatTime(isoString) {
   }
 }
 
-function renderMatches(matches, container, isLiveSection = false) {
+function renderMatches(matches, container, isLiveSection = false, sportKey = 'football') {
   if (!matches || matches.length === 0) {
     container.innerHTML = '<div class="empty">No matches found for the selected filters.</div>';
     return;
   }
 
   container.innerHTML = matches.map(m => {
-    // Normalize structure (football vs other sports)
     const isFootball = m.fixture !== undefined;
     const fixture = isFootball ? m.fixture : m;
     const teams = isFootball ? m.teams : m.teams;
@@ -115,6 +154,10 @@ function renderMatches(matches, container, isLiveSection = false) {
     const isLive = status.short && ['1H','2H','HT','ET','BT','P','LIVE','Q1','Q2','Q3','Q4','OT'].includes(status.short);
     const statusText = status.long || status.short || 'Scheduled';
     const kickoff = formatTime(fixture.date || m.date);
+    
+    const leagueId = league?.id;
+    const streamLink = getStreamLink(leagueId, sportKey);
+    const streamBtnText = isLive ? '🔴 Watch Live Stream' : '📺 Watch Stream';
 
     return `
       <div class="match-card ${isLive ? 'live' : ''}">
@@ -134,6 +177,11 @@ function renderMatches(matches, container, isLiveSection = false) {
           <span class="status ${isLive ? 'live' : ''}">${statusText}</span>
           <span>${kickoff}</span>
         </div>
+        <div class="stream-actions">
+          <a href="${streamLink}" target="_blank" rel="noopener noreferrer" class="stream-btn">
+            ${streamBtnText}
+          </a>
+        </div>
       </div>
     `;
   }).join('');
@@ -141,10 +189,9 @@ function renderMatches(matches, container, isLiveSection = false) {
 
 async function loadLive() {
   liveContainer.innerHTML = '<div class="loading">Loading live matches...</div>';
-  // Focus on football for live (most reliable); can expand later
   const url = `${SPORTS.football.base}/fixtures?live=all&timezone=${encodeURIComponent(currentTimezone)}`;
   const matches = await apiFetch(url);
-  renderMatches(matches.slice(0, 30), liveContainer, true);
+  renderMatches(matches.slice(0, 30), liveContainer, true, 'football');
 }
 
 async function loadUpcoming() {
@@ -153,13 +200,12 @@ async function loadUpcoming() {
   const tomorrow = getTomorrowDate();
   const url = `${SPORTS.football.base}/fixtures?date=${today}&timezone=${encodeURIComponent(currentTimezone)}&status=NS`;
   let matches = await apiFetch(url);
-  // Also try tomorrow if few results
   if (matches.length < 10) {
     const url2 = `${SPORTS.football.base}/fixtures?date=${tomorrow}&timezone=${encodeURIComponent(currentTimezone)}&status=NS`;
     const more = await apiFetch(url2);
     matches = matches.concat(more);
   }
-  renderMatches(matches.slice(0, 40), upcomingContainer);
+  renderMatches(matches.slice(0, 40), upcomingContainer, false, 'football');
 }
 
 async function loadSportMatches(sportKey) {
@@ -175,14 +221,13 @@ async function loadSportMatches(sportKey) {
     url = `${sport.base}/${sport.endpoint}?date=${today}&timezone=${encodeURIComponent(currentTimezone)}`;
   }
   const matches = await apiFetch(url);
-  renderMatches(matches.slice(0, 30), sportMatchesContainer);
+  renderMatches(matches.slice(0, 30), sportMatchesContainer, false, sportKey);
 }
 
 async function loadAll() {
   await Promise.all([loadLive(), loadUpcoming()]);
-  // Start auto-refresh for live
   if (refreshInterval) clearInterval(refreshInterval);
-  refreshInterval = setInterval(loadLive, 30000); // every 30s
+  refreshInterval = setInterval(loadLive, 30000);
 }
 
 // Start

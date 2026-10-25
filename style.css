@@ -237,6 +237,29 @@ h2 {
 
 .note { margin-top: 8px; font-size: 0.8rem; }
 
+.stream-actions {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.stream-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: none;
+}
+
+.stream-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+}
+
 @media (max-width: 600px) {
   .header-inner { flex-direction: column; align-items: flex-start; }
   .matches-grid { grid-template-columns: 1fr; }
