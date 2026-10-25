@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportsHub | Live Scores & Upcoming Matches</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="logo">Sports<span>Hub</span></a>
+      <div class="controls">
+        <label>
+          Timezone:
+          <select id="timezone-select">
+            <option value="Asia/Dhaka">Bangladesh (Asia/Dhaka)</option>
+            <option value="Asia/Kolkata">India (Asia/Kolkata)</option>
+            <option value="Europe/London">UK (Europe/London)</option>
+            <option value="America/New_York">USA East (America/New_York)</option>
+            <option value="America/Los_Angeles">USA West (America/Los_Angeles)</option>
+            <option value="Asia/Dubai">UAE (Asia/Dubai)</option>
+            <option value="Europe/Paris">France (Europe/Paris)</option>
+            <option value="Asia/Tokyo">Japan (Asia/Tokyo)</option>
+            <option value="Australia/Sydney">Australia (Australia/Sydney)</option>
+          </select>
+        </label>
+        <button id="refresh-btn" class="btn">Refresh</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <div class="container">
+      <button class="tab active" data-tab="live">Live Now</button>
+      <button class="tab" data-tab="upcoming">Upcoming</button>
+      <button class="tab" data-tab="sports">Sports Categories</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Live Section -->
+    <section id="live" class="tab-content active">
+      <h2>Live Events</h2>
+      <p class="subtitle">Matches currently in progress. Auto-updates every 30 seconds.</p>
+      <div id="live-matches" class="matches-grid">
+        <div class="loading">Loading live matches...</div>
+      </div>
+    </section>
+
+    <!-- Upcoming Section -->
+    <section id="upcoming" class="tab-content">
+      <h2>Upcoming Matches</h2>
+      <p class="subtitle">Next fixtures (today & tomorrow) in your selected timezone.</p>
+      <div id="upcoming-matches" class="matches-grid">
+        <div class="loading">Loading upcoming matches...</div>
+      </div>
+    </section>
+
+    <!-- Sports Categories -->
+    <section id="sports" class="tab-content">
+      <h2>Sports Categories</h2>
+      <p class="subtitle">Choose a sport to see its live and upcoming events.</p>
+      <div class="sports-grid">
+        <div class="sport-card" data-sport="football">
+          <div class="sport-icon">⚽</div>
+          <h3>Football</h3>
+          <p>Soccer / Association Football</p>
+        </div>
+        <div class="sport-card" data-sport="basketball">
+          <div class="sport-icon">🏀</div>
+          <h3>Basketball</h3>
+          <p>NBA, EuroLeague & more</p>
+        </div>
+        <div class="sport-card" data-sport="baseball">
+          <div class="sport-icon">⚾</div>
+          <h3>Baseball</h3>
+          <p>MLB & International</p>
+        </div>
+        <div class="sport-card" data-sport="hockey">
+          <div class="sport-icon">🏒</div>
+          <h3>Ice Hockey</h3>
+          <p>NHL & Leagues</p>
+        </div>
+        <div class="sport-card" data-sport="american-football">
+          <div class="sport-icon">🏈</div>
+          <h3>American Football</h3>
+          <p>NFL & NCAA</p>
+        </div>
+        <div class="sport-card" data-sport="volleyball">
+          <div class="sport-icon">🏐</div>
+          <h3>Volleyball</h3>
+          <p>International leagues</p>
+        </div>
+      </div>
+      <div id="sport-matches" class="matches-grid" style="margin-top: 30px;"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Powered by <a href="https://api-sports.io" target="_blank">API-Sports</a> • Data refreshes automatically for live matches</p>
+      <p class="note">Select your country timezone above. Live matches appear in the Live tab as soon as they start.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
